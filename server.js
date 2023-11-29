@@ -4,6 +4,7 @@ const path = require('path');
 const axios = require('axios');
 const cors = require('cors');
 const config = require('config');
+
 const {
     withdrawFundtoDatabase,
     depositFundtoDatabase,
@@ -30,6 +31,7 @@ app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/traits', require('./routes/api/traits'));
 app.use('/api/treasury', require('./routes/api/treasury'));
+app.use('/api/getbalance', require('./routes/api/getbalance'));
 
 
 const green_index = 0;
@@ -122,7 +124,7 @@ io.on("connection", (socket) => {
             return;
         } else if (result.message == "success") {
             const res = await withdrawFundtoDatabase(buffer?.wallet, Number(buffer?.amount), result.data.index);
-            if(res.ok) {
+            if (res.ok) {
                 const signResult = await signWithdrawMsg(buffer?.wallet, Number(buffer?.amount), result.data.index);
                 socket.emit("message", {
                     ...JSON.parse(JSON.stringify(signResult)),
